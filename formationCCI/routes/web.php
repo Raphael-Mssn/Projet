@@ -24,6 +24,13 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
+Route::get('/courses', 'App\Http\Controllers\CourseController@index')->name('courses.index');
+
+Route::group(['auth:sanctum', 'verified'], function() {
+    Route::get('/course/{id}', 'App\Http\Controllers\CourseController@show')->name('courses.show');
+    Route::post('/toggleProgress', 'App\Http\Controllers\CourseController@toggleProgress')->name('courses.toggle');
+
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+});
