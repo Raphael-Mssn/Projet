@@ -4,8 +4,11 @@ require('./bootstrap');
 import { createApp, h } from 'vue';
 import { App as InertiaApp, plugin as InertiaPlugin } from '@inertiajs/inertia-vue3';
 import { InertiaProgress } from '@inertiajs/progress';
+import mitt from 'mitt';
 
 const el = document.getElementById('app');
+
+window.eventBus = mitt();
 
 createApp({
     render: () =>

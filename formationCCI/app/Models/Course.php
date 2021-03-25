@@ -10,6 +10,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Course extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['title', 'description'];
+
+    protected static function booted()
+    {
+        static::creating(function ($course) {
+            $course->user_id = auth()->id();
+        });
+    }
     
     public function episodes()
     {
