@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Course;
+use App\Models\Episode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class CourseController extends Controller
 {
@@ -37,12 +39,39 @@ class CourseController extends Controller
         ]);
     }
 
+    public function store(Request $request)
+    {
+        //Gestion des erreurs et restrictions
+        $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'episodes' => ['required', 'array'],
+            'episodes.*.title' => 'required',
+            'episodes.*.description' => 'required',
+            'episodes.*.video_url' => 'required'
+        ]);
+
+        //Persistance du cours dans la BD
+        $course = Course::create($request->all());
+
+        //Persistance des épisodes dans la BD
+        foreach($request->input('episodes') as $episode)
+        {
+            $episode['course_id'] = $course->id;
+            Episode::create($episode);
+        };
+
+        return Redirect::route('dashboard')->with('success', 'Félicitations, la formation a bien été mise 
+        en ligne.');
+    }
+
     public function toggleProgress(Request $resquest)
     {
         $id = $resquest->input('episodeId');
         $user = auth()->user();
 
-        $user->episodes()->toggle($id);
+        $user->episodes()->toggle($id); //! Erreur qui n'en est pas vraiment une,
+        //! sûrement due à une MaJ mais c'est fonctionnel
 
         return $user->episodes;
     }

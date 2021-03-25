@@ -12,6 +12,9 @@
             picture-in-picture" allowfullscreen></iframe>
             <div class="text-sm text-gray-500">{{ this.courseShow.episodes[this.currentKey].description }}</div>
 
+            <div class="py-6">
+                <progress-bar :watched-episodes="watched" :episodes="course.episodes"/>
+            </div>
 
             <div class="mt-6">
                 <ul v-for="(episode, index) in this.courseShow.episodes" v-bind:key="episode.id">
@@ -32,11 +35,13 @@
 <script>
 import AppLayout from './../../Layouts/AppLayout';
 import ProgressButton from './ProgressButton';
+import ProgressBar from './ProgressBar';
 
 export default {
     components: {
         AppLayout,
-        ProgressButton
+        ProgressButton,
+        ProgressBar
     },
 
     props:['course', 'watched'],
