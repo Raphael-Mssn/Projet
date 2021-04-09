@@ -65,6 +65,29 @@ class CourseController extends Controller
         en ligne.');
     }
 
+    public function edit (int $id)
+    {
+        $course = Course::where('id', $id)->with('episodes')->first();
+
+        return Inertia::render('Courses/Edit', [
+            'course' => $course,
+        ]);
+    }
+
+    public function update(Request $request)
+    {
+        $course = Course::where('id', $request->id)->with('episodes')->first();
+        $course->update($request->all()); 
+        $course-episodes()->delete(); 
+
+
+        foreach($request->episodes as $episode) {
+            $episode['course_id'] = $course->id; 
+                Episode::create($episode); 
+        }
+        return Redirect::route('courses.index')->with('success', 'Félicitations, la formation a bien été modifiée.');
+    }
+
     public function toggleProgress(Request $resquest)
     {
         $id = $resquest->input('episodeId');
